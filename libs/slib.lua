@@ -115,7 +115,7 @@ function slib.crypt(str, k, inv)
   return enc;
 end
 
-function slib.isFirstSave(filename)
+function slib.isFirst(filename)
   filename = filename or "save.dat"
   if love.filesystem.isFile(filename) then
     return false

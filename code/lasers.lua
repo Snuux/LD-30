@@ -4,7 +4,7 @@ local smallLasers
 
 function Lasers:init()
   smallLasers = {}
-  Timer.add(20, function(func)
+  Timer.add(7, function(func)
       local sl = SmallLaser:new()
       table.insert(smallLasers, sl)
       Timer.add(math.random(10, 25), func)
@@ -46,8 +46,8 @@ function SmallLaser:initialize()
   self.x = windowW + 100
   self.y = math.random(0, windowH)
   self.w = 15
-  self.h = love.math.random(50, 200)
-  self.o = Physics.create.rectangle(self.x, self.y, self.w, self.h, 'dynamic')
+  self.h = love.math.random(100, 250)
+  self.o = Physics.create.rectangle(self.x, self.y, self.w, self.h-20, 'dynamic')
   self.o.f:setSensor(true)
   self.type = love.math.random(0, 2) -- 0, 1 - Fixed, 2 - Rotated
   self.speed = love.math.random(0, math.pi*2)
@@ -64,6 +64,8 @@ function SmallLaser:initialize()
     self.o.b:setAngle(self.speed)
   end
   self.o.f:setUserData({name = 'laser'})
+  
+  love.audio.play(sound.laser)
 end
 
 function SmallLaser:update(dt)
@@ -93,7 +95,9 @@ function SmallLaser:draw()
     love.graphics.push()
     love.graphics.translate(bx,by)
     love.graphics.rotate(bodyAngle)  
+      love.graphics.setBlendMode("additive")
       love.graphics.draw(self.ps, 0, 0)--bx, by)
+      love.graphics.setBlendMode("alpha")
     love.graphics.pop()
   end
 end

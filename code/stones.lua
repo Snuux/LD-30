@@ -1,10 +1,8 @@
 local Stones = {}
 
-local stone
-
 function Stones:init()
   Timer.add(15, function(func) 
-      local n = love.math.random(5, 10)
+      local n = love.math.random(3, 8)
       stone = Stone:new(n)
       Timer.add(9, function() 
             stone.isDestroy = true
@@ -38,13 +36,16 @@ function Stone:initialize(n)
   self.o = {}
   local speedAngles = { -50, -20, 10, 30, 60 }
   for i=1,n do
-    local o = Physics.create.circle(love.math.random(0, windowW), 0-30, sizes[love.math.random(#sizes)], "dynamic")
+    local o = Physics.create.circle(love.math.random(100, 150) * i, 0-30, sizes[love.math.random(#sizes)], "dynamic")
     o.b:setMass(math.random(40, 60))
     o.b:applyLinearImpulse(speedAngles[love.math.random(#speedAngles)], love.math.random(600, 1000))
     o.segments = love.math.random(5, 7)
     o.f:setUserData({name = 'stone'})
+    o.f:setFilterData(1, 1, -1)
     table.insert(self.o, o)
   end
+  
+  love.audio.play(sound.stones)
 end
 
 function Stone:update(dt)

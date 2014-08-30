@@ -1,15 +1,22 @@
 local Edges = {}
 
-local curMouse = { x = 0, y = 0 }
-local edgesSize = 20
-local edgesH = 15
-local edgesNumber = 0
-local edgesCur = 1
+local curMouse 
+local edgesSize 
+local edgesH 
+local edgesNumber 
+local edgesCur
 local edges = {}
 
 Edges.all = edges
 
 function Edges:init()
+  curMouse = { x = 0, y = 0 }
+  edgesSize = 20
+  edgesH = 15
+  edgesNumber = 0
+  edgesCur = 1
+  edges = {}
+  
   for i=1, edgesSize do
     edges[i] = nil
   end
@@ -73,7 +80,7 @@ end
 
 function Edges:draw()
   for _,v in ipairs(edges) do
-    Physics.draw(v)
+    Physics.draw(v, {0, 255, 255})
   end
 end
 

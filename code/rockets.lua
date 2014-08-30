@@ -1,8 +1,6 @@
 local Rockets = {}
-
-local single, multi
-
-function Rockets:init()
+ 
+ function Rockets:init()
   Timer.addPeriodic(4, function() 
       local x, y = windowW+50, love.math.random(30, windowH)
       single = SingleRocket:new(x, y)
@@ -61,7 +59,9 @@ function SingleRocket:initialize(x, y)
   self.o.b:setMass(1)
   self.o.b:applyLinearImpulse(-800, love.math.random(-10, 10))
   self.o.f:setUserData({name = 'rocket'})
+  self.o.f:setFilterData(1, 1, -1)
   self.ps = Particles:new(require('code.particles.rockets'), image.smallSquare)
+  love.audio.play(sound.rocket)
 end
 
 function SingleRocket:update(dt)
@@ -95,6 +95,7 @@ function SingleRocket:destroy()
   self.o.b:destroy()
   self.ps:stop()
   self.ps = nil
+  self.isDestroy = true
 end
 
 --------MULTI ROCKET--------
@@ -112,9 +113,11 @@ function MultiRocket:initialize(x, y, n)
     o.b:setMass(1)
     o.b:applyLinearImpulse(math.random(-600, -900), 0)
     o.f:setUserData({name = 'rocket'})
+    o.f:setFilterData(1, 1, -1)
     o.ps = Particles:new(require('code.particles.rockets'), image.smallSquare)
     table.insert(self.o, o)
   end
+  love.audio.play(sound.rocket)
 end
 
 function MultiRocket:update(dt)
@@ -129,7 +132,9 @@ end
 function MultiRocket:draw()
   for i,v in ipairs(self.o) do
     Physics.draw(v, {210, 0, 0})
+    love.graphics.setBlendMode("additive")
     love.graphics.draw(v.ps, 0, 0)--bx, by)
+    love.graphics.setBlendMode("alpha")
     --love.graphics.polygon("fill", v.s:getPoints())
   end
 end
@@ -138,6 +143,7 @@ function MultiRocket:destroy()
   for i,v in ipairs(self.o) do
     v.b:destroy()
   end
+  self.isDestroy = true
 end
 
 return Rockets

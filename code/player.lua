@@ -18,6 +18,19 @@ function Player:initialize(x, y)
   self.bgtemp = {}
   self.invisibleB = false
   self.fireB = false
+  self.score = 0
+  self.invisibleC = 5
+  self.invisibleF = true --future
+  
+  Timer.addPeriodic(1, function()
+      self.invisibleC = self.invisibleC + 1
+      if self.invisibleC > 5 then
+        self.invisibleC = 5
+        self.invisibleF = true
+      end
+      end)
+  
+  self.isDead = false
 end
 
 function Player:update(dt)
@@ -34,16 +47,21 @@ function Player:update(dt)
     o.b:applyForce( 2000, 0 )
     self.fire:start()
     self.fireB = true
-  elseif love.mouse.isDown('r') then
+  elseif love.mouse.isDown('r') and self.invisibleF then
+    self.invisibleC = self.invisibleC - 1
     self.invisibleB = true
     love.graphics.setBackgroundColor(150, 50, 50)
     o.b:setActive(false)
     self.invisible:start()
   end
+
+  if self.invisibleC <= 0 then
+    self.invisibleF = false
+  end
   
+  --print(self.o.f:getUserData().status)
   if self.o.f:getUserData().status == 'dead' then
-    --animation
-    print('dead')
+    self.isDead = true
   end
   
   self.x, self.y = o.b:getPosition()
